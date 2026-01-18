@@ -1,86 +1,212 @@
 import React, { useState } from 'react';
 
+interface Vault {
+  id: string;
+  name: string;
+  type: 'SUPRA' | 'EigenLayer' | 'Symbiotic';
+  apy: number;
+  tvl: string;
+  description: string;
+  icon: string;
+}
+
 export const VaultPanel: React.FC = () => {
-  const [vaults] = useState([
-    { id: 1, name: 'stETH EigenLayer', apy: '8.5%', tvl: '$2.4M', type: 'EigenLayer', status: 'Active' },
-    { id: 2, name: 'SUPRA Symbiotic', apy: '12.0%', tvl: '$1.8M', type: 'Symbiotic', status: 'Active' },
-    { id: 3, name: 'Hybrid Restaking', apy: '9.8%', tvl: '$3.1M', type: 'Hybrid', status: 'Active' },
+  const [vaults] = useState<Vault[]>([
+    {
+      id: 'supra-vault',
+      name: 'SUPRA Vault',
+      type: 'SUPRA',
+      apy: 12.5,
+      tvl: '$2.5M',
+      description: 'Core SUPRA staking vault with boosted yields',
+      icon: '⚡',
+    },
+    {
+      id: 'eigenlayer-steth',
+      name: 'EigenLayer stETH',
+      type: 'EigenLayer',
+      apy: 8.2,
+      tvl: '$1.2M',
+      description: 'Restake stETH through EigenLayer for additional rewards',
+      icon: '🔷',
+    },
+    {
+      id: 'symbiotic-supra',
+      name: 'Symbiotic SUPRA',
+      type: 'Symbiotic',
+      apy: 15.8,
+      tvl: '$800K',
+      description: 'Dual restaking with Symbiotic protocol',
+      icon: '🔗',
+    },
   ]);
 
-  const [selectedVault, setSelectedVault] = useState<number | null>(null);
-  const [depositAmount, setDepositAmount] = useState('');
+  const [selectedVault, setSelectedVault] = useState<string | null>(null);
+  const [amount, setAmount] = useState('');
+  const [action, setAction] = useState<'deposit' | 'withdraw'>('deposit');
 
-  const handleDeposit = () => {
-    if (depositAmount && selectedVault) {
-      console.log(`Depositing ${depositAmount} USDC into vault ${selectedVault}`);
-      setDepositAmount('');
-    }
+  const handleVaultAction = (vaultId: string) => {
+    console.log(`${action}ing ${amount} to vault ${vaultId}`);
+    setAmount('');
+    setSelectedVault(null);
   };
 
   return (
-    <div className="bg-darkGray border border-gold rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gold mb-6">Yield & Restaking Vaults</h2>
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Vault Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-darkGray border border-gold/30 rounded-lg p-4 text-center">
+          <div className="text-2xl font-bold text-gold">$4.5M</div>
+          <div className="text-gray-400">Total TVL</div>
+        </div>
+        <div className="bg-darkGray border border-gold/30 rounded-lg p-4 text-center">
+          <div className="text-2xl font-bold text-gold">12.2%</div>
+          <div className="text-gray-400">Avg APY</div>
+        </div>
+        <div className="bg-darkGray border border-gold/30 rounded-lg p-4 text-center">
+          <div className="text-2xl font-bold text-gold">3</div>
+          <div className="text-gray-400">Active Vaults</div>
+        </div>
+        <div className="bg-darkGray border border-gold/30 rounded-lg p-4 text-center">
+          <div className="text-2xl font-bold text-gold">847</div>
+          <div className="text-gray-400">Depositors</div>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      {/* Vault Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {vaults.map((vault) => (
-          <div
-            key={vault.id}
-            onClick={() => setSelectedVault(vault.id)}
-            className={`p-4 rounded-lg cursor-pointer transition border-2 ${
-              selectedVault === vault.id
-                ? 'border-gold bg-dark'
-                : 'border-gold/30 bg-dark hover:border-gold'
-            }`}
-          >
-            <h3 className="text-white font-bold mb-2">{vault.name}</h3>
-            <div className="space-y-1 text-sm text-gray-300">
-              <div>APY: <span className="text-gold font-semibold">{vault.apy}</span></div>
-              <div>TVL: <span className="text-gold font-semibold">{vault.tvl}</span></div>
-              <div>Type: <span className="text-gold font-semibold">{vault.type}</span></div>
+          <div key={vault.id} className="bg-darkGray border border-gold/30 rounded-lg p-6 hover:border-gold transition">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{vault.icon}</span>
+                <div>
+                  <h3 className="text-xl font-bold text-gold">{vault.name}</h3>
+                  <span className="text-sm text-gray-400">{vault.type}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gold">{vault.apy}%</div>
+                <div className="text-sm text-gray-400">APY</div>
+              </div>
             </div>
-            <div className="mt-2">
-              <span className="px-2 py-1 bg-green-600 text-white text-xs font-bold rounded">
-                {vault.status}
-              </span>
+
+            <p className="text-gray-300 text-sm mb-4">{vault.description}</p>
+
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-400">TVL:</span>
+              <span className="text-gold font-bold">{vault.tvl}</span>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setSelectedVault(vault.id);
+                  setAction('deposit');
+                }}
+                className="flex-1 py-2 bg-gold hover:bg-darkGold text-dark font-bold rounded transition"
+              >
+                Deposit
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedVault(vault.id);
+                  setAction('withdraw');
+                }}
+                className="flex-1 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded transition"
+              >
+                Withdraw
+              </button>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Action Modal */}
       {selectedVault && (
-        <div className="bg-dark border border-gold rounded-lg p-4">
-          <h3 className="text-gold font-bold mb-4">Deposit into Vault</h3>
-          <div className="space-y-3">
-            <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
-                Amount (USDC)
-              </label>
-              <input
-                type="number"
-                value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-                placeholder="1000"
-                className="w-full px-4 py-2 bg-darkGray border border-gold rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold"
-              />
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleDeposit}
-                disabled={!depositAmount}
-                className="flex-1 py-2 bg-gold hover:bg-darkGold text-dark font-bold rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Deposit & Split PT/YT
-              </button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-darkGray border border-gold rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gold">
+                {action === 'deposit' ? 'Deposit to' : 'Withdraw from'} {vaults.find(v => v.id === selectedVault)?.name}
+              </h3>
               <button
                 onClick={() => setSelectedVault(null)}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded transition"
+                className="text-gray-400 hover:text-white"
               >
-                Cancel
+                ✕
               </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-300 mb-2">Amount</label>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="w-full px-4 py-2 bg-dark border border-gold rounded text-white"
+                  placeholder="Enter amount"
+                />
+              </div>
+
+              <div className="bg-dark rounded p-3 border border-gold/30">
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-400">Current APY:</span>
+                  <span className="text-gold">{vaults.find(v => v.id === selectedVault)?.apy}%</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Est. Annual Yield:</span>
+                  <span className="text-gold">
+                    {amount ? (parseFloat(amount) * (vaults.find(v => v.id === selectedVault)?.apy || 0) / 100).toFixed(2) : '0'} tokens
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleVaultAction(selectedVault)}
+                  disabled={!amount}
+                  className="flex-1 py-2 bg-gold hover:bg-darkGold text-dark font-bold rounded transition disabled:opacity-50"
+                >
+                  {action === 'deposit' ? 'Deposit' : 'Withdraw'}
+                </button>
+                <button
+                  onClick={() => setSelectedVault(null)}
+                  className="flex-1 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded transition"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* PT/YT Splitting Section */}
+      <div className="bg-darkGray border border-gold/30 rounded-lg p-6">
+        <h3 className="text-2xl font-bold text-gold mb-4">Principal/Yield Token Splitting</h3>
+        <p className="text-gray-300 mb-4">
+          Split your vault positions into Principal Tokens (PT) and Yield Tokens (YT) for advanced trading strategies.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-dark rounded p-4 border border-gold/30">
+            <h4 className="text-lg font-bold text-gold mb-2">🎯 Principal Tokens (PT)</h4>
+            <p className="text-gray-300 text-sm">
+              Represents the underlying principal amount. Trade at discount to face value.
+            </p>
+          </div>
+          <div className="bg-dark rounded p-4 border border-gold/30">
+            <h4 className="text-lg font-bold text-gold mb-2">📈 Yield Tokens (YT)</h4>
+            <p className="text-gray-300 text-sm">
+              Represents future yield streams. Higher risk, higher potential returns.
+            </p>
+          </div>
+        </div>
+        <button className="mt-4 px-6 py-2 bg-gold hover:bg-darkGold text-dark font-bold rounded transition">
+          Split Position
+        </button>
+      </div>
     </div>
   );
 };
