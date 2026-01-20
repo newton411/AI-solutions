@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "export": "next build && next export"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "^14.0.0",
@@ -18,7 +17,14 @@
     "react-chartjs-2": "^5.2.0",
     "wagmi": "^1.4.0",
     "viem": "^1.19.0",
-    "zustand": "^4.4.0"
+    "zustand": "^4.4.0",
+    "framer-motion": "^10.16.0",
+    "lucide-react": "^0.294.0",
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-tooltip": "^1.0.7",
+    "recharts": "^2.8.0",
+    "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
     "typescript": "^5.2.0",

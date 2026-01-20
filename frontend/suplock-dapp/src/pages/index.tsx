@@ -1,15 +1,33 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
+import { motion, AnimatePresence } from 'framer-motion';
+import toast, { Toaster } from 'react-hot-toast';
 import { WalletProvider } from '@/contexts/WalletContext';
-import { WalletConnectButton } from '@/components/WalletConnectButton';
+import { Navigation } from '@/components/Navigation';
+import { HeroSection } from '@/components/HeroSection';
+import { AboutSection, FeaturesSection } from '@/components/AboutFeaturesSection';
+import { RoadmapSection } from '@/components/RoadmapSection';
+import { YieldCalculator } from '@/components/YieldCalculator';
+import { TeamCommunitySection } from '@/components/TeamCommunitySection';
 import { LockUI } from '@/components/LockUI';
 import { TokenomicsCharts } from '@/components/TokenomicsCharts';
 import { GovernancePanel } from '@/components/GovernancePanel';
 import { VaultPanel } from '@/components/VaultPanel';
 import { DividendPanel } from '@/components/DividendPanel';
+import { EnhancedFooter } from '@/components/EnhancedFooter';
 
 type Tab = 'overview' | 'lock' | 'governance' | 'vaults' | 'dividends';
 
+/**
+ * SUPLOCK Main Application
+ * Enhanced layout with all sections:
+ * - Hero with tagline "Burn to Floor. Yield Forever."
+ * - About & Features
+ * - Roadmap (4 phases)
+ * - Yield Calculator
+ * - Team & Community
+ * - Enhanced Footer
+ */
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [isLocking, setIsLocking] = useState(false);
@@ -17,9 +35,11 @@ const App: React.FC = () => {
   const handleLock = async (amount: string, duration: number) => {
     setIsLocking(true);
     try {
-      // Mock lock transaction
       await new Promise(resolve => setTimeout(resolve, 2000));
+      toast.success(`Successfully locked ${amount} SUPRA for ${Math.floor(duration / (30 * 24 * 60 * 60))} months!`);
       console.log(`Locked ${amount} SUPRA for ${duration} seconds`);
+    } catch (error) {
+      toast.error('Failed to lock tokens. Please try again.');
     } finally {
       setIsLocking(false);
     }
@@ -32,181 +52,248 @@ const App: React.FC = () => {
     veRewards: 45_200_000,
   };
 
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -20 },
+  };
+
+  const pageTransition = {
+    type: 'tween',
+    ease: 'anticipate',
+    duration: 0.5,
+  };
+
   return (
     <WalletProvider>
       <Head>
-        <title>SUPLOCK - Sustainable DeFi Protocol</title>
-        <meta name="description" content="SUPLOCK: Community-driven DeFi protocol on Supra L1" />
+        <title>SUPLOCK - Revolutionizing $SUPRA Tokenomics on Supra L1</title>
+        <meta
+          name="description"
+          content="SUPLOCK: Burn to Floor. Yield Forever. Lock $SUPRA tokens to earn boosted yields up to 2.5x, participate in governance, and benefit from automated fee distribution with MEV protection."
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="SUPLOCK - Deflation, Yields, Automation on Supra L1" />
+        <meta
+          property="og:description"
+          content="The protocol powering sustainable DeFi. Join thousands of $SUPRA holders earning passive income."
+        />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-dark via-darkGray to-dark text-white">
-        {/* Navigation */}
-        <nav className="border-b border-gold/30 sticky top-0 z-50 bg-dark/95 backdrop-blur">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="text-3xl">⛓️</div>
-              <h1 className="text-2xl font-bold text-gold">SUPLOCK</h1>
-            </div>
-            <div className="hidden md:flex gap-6">
-              {(['overview', 'lock', 'governance', 'vaults', 'dividends'] as Tab[]).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`capitalize px-4 py-2 rounded transition ${
-                    activeTab === tab
-                      ? 'bg-gold text-dark font-bold'
-                      : 'text-gold hover:bg-gold/10'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <WalletConnectButton />
-          </div>
-        </nav>
+      <div className="min-h-screen bg-black text-white overflow-x-hidden">
+        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Main Content */}
-        <main className="container mx-auto px-4 py-12">
-          {/* Hero Section */}
-          {activeTab === 'overview' && (
-            <div className="space-y-12 animate-fadeIn">
-              <div className="text-center space-y-6 mb-12">
-                <h2 className="text-5xl md:text-6xl font-bold">
-                  Sustainable DeFi on <span className="text-gold">Supra L1</span>
-                </h2>
-                <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                  Lock $SUPRA to earn boosted yields, participate in governance, and benefit from automated fee distribution. 
-                  Built with privacy, security, and long-term sustainability in mind.
-                </p>
-                <div className="flex gap-4 justify-center flex-wrap">
-                  <button
-                    onClick={() => setActiveTab('lock')}
-                    className="px-8 py-3 bg-gold hover:bg-darkGold text-dark font-bold rounded-lg transition transform hover:scale-105"
-                  >
-                    Start Locking
-                  </button>
-                  <a
-                    href="https://gamma.app/docs/Sustainable-DeFi-7jabltpt95th05k"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-8 py-3 border-2 border-gold text-gold hover:bg-gold/10 font-bold rounded-lg transition"
-                  >
-                    View Whitepaper
-                  </a>
-                </div>
-              </div>
+        <main>
+          <AnimatePresence mode="wait">
+            {/* Overview Tab - Complete Homepage */}
+            {activeTab === 'overview' && (
+              <motion.div
+                key="overview"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                {/* Hero Section */}
+                <HeroSection onGetStarted={() => setActiveTab('lock')} />
 
-              {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                {[
-                  { label: 'Total Locked', value: '12.5B SUPRA' },
-                  { label: 'Circulating Supply', value: '45.2B SUPRA' },
-                  { label: 'Protocol Fees', value: '$2.3M' },
-                  { label: 'Active Vaults', value: '3' },
-                ].map((stat, idx) => (
-                  <div key={idx} className="bg-darkGray border border-gold/30 rounded-lg p-4 text-center">
-                    <p className="text-gray-400 text-sm mb-2">{stat.label}</p>
-                    <p className="text-gold text-2xl font-bold">{stat.value}</p>
+                {/* About Section */}
+                <AboutSection />
+
+                {/* Features Section */}
+                <FeaturesSection />
+
+                {/* Yield Calculator */}
+                <YieldCalculator />
+
+                {/* Roadmap */}
+                <RoadmapSection />
+
+                {/* Team & Community */}
+                <TeamCommunitySection />
+
+                {/* Tokenomics Section */}
+                <section className="py-20 px-4 sm:px-6 lg:px-8">
+                  <div className="max-w-6xl mx-auto">
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8 }}
+                      className="text-center mb-16"
+                    >
+                      <h2 className="text-4xl font-bold text-cyan-300 mb-4">Protocol Tokenomics</h2>
+                      <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                        Sustainable deflationary mechanics with automated fee distribution and governance incentives
+                      </p>
+                    </motion.div>
+                    <TokenomicsCharts data={tokenomicsData} />
                   </div>
-                ))}
-              </div>
+                </section>
+              </motion.div>
+            )}
 
-              {/* Tokenomics Charts */}
-              <div>
-                <h3 className="text-3xl font-bold text-gold mb-6 text-center">Tokenomics & Distribution</h3>
-                <TokenomicsCharts data={tokenomicsData} />
-              </div>
+            {/* Lock Tab */}
+            {activeTab === 'lock' && (
+              <motion.div
+                key="lock"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+                className="min-h-screen flex items-center justify-center px-4 py-20 pt-32"
+              >
+                <div className="max-w-4xl mx-auto w-full">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-center mb-12"
+                  >
+                    <h2 className="text-5xl font-bold text-cyan-300 mb-4">Lock Your $SUPRA</h2>
+                    <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                      Earn boosted yields up to 2.5x and participate in protocol governance
+                    </p>
+                  </motion.div>
 
-              {/* Features */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  {
-                    title: '🔒 Vote-Escrow Locking',
-                    description: 'Lock $SUPRA to mint veSUPRA NFTs. Up to 2.5x yield boost for 4-year locks.',
-                  },
-                  {
-                    title: '🛡️ Privacy Layer',
-                    description: 'LP Vacuum encrypts all user intents to prevent MEV, front-running, and sandwich attacks.',
-                  },
-                  {
-                    title: '💰 Yield Vaults',
-                    description: 'Split yields into PT/YT tokens. Dual restaking via EigenLayer and Symbiotic.',
-                  },
-                ].map((feature, idx) => (
-                  <div key={idx} className="bg-darkGray border border-gold/30 rounded-lg p-6 hover:border-gold transition">
-                    <h4 className="text-xl font-bold text-gold mb-3">{feature.title}</h4>
-                    <p className="text-gray-300">{feature.description}</p>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <LockUI onLock={handleLock} isLoading={isLocking} />
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 }}
+                      className="glass-cyan rounded-xl p-6 space-y-6"
+                    >
+                      <h3 className="text-2xl font-bold text-cyan-300">How Locking Works</h3>
+                      <div className="space-y-4">
+                        {[
+                          { step: '1', title: 'Choose Amount', desc: 'Select how much $SUPRA to lock' },
+                          { step: '2', title: 'Select Duration', desc: 'Lock for 3-48 months for higher boosts' },
+                          { step: '3', title: 'Receive veSUPRA', desc: 'Get soulbound NFT for governance' },
+                          { step: '4', title: 'Earn Rewards', desc: 'Base APR + boost multiplier yields' },
+                        ].map((item) => (
+                          <div key={item.step} className="flex gap-4">
+                            <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-500 text-black rounded-full flex items-center justify-center font-bold text-sm">
+                              {item.step}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-white">{item.title}</h4>
+                              <p className="text-gray-400 text-sm">{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Lock Tab */}
-          {activeTab === 'lock' && (
-            <div className="animate-fadeIn space-y-8">
-              <h2 className="text-4xl font-bold text-gold text-center">Lock Your $SUPRA</h2>
-              <div className="max-w-2xl mx-auto space-y-8">
-                <LockUI onLock={handleLock} isLoading={isLocking} />
-                <div className="bg-darkGray border border-gold/30 rounded-lg p-6 space-y-4">
-                  <h3 className="text-xl font-bold text-gold">How It Works</h3>
-                  <ol className="space-y-3 text-gray-300">
-                    <li><strong>1. Connect Wallet</strong> - Link your Supra wallet</li>
-                    <li><strong>2. Choose Amount</strong> - Select how much $SUPRA to lock</li>
-                    <li><strong>3. Select Duration</strong> - Lock for 3-48 months (boost up to 2.5x)</li>
-                    <li><strong>4. Receive veSUPRA</strong> - Soulbound NFT for governance & dividends</li>
-                    <li><strong>5. Earn Yield</strong> - Base APR + boost multiplier rewards</li>
-                  </ol>
                 </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
 
-          {/* Governance Tab */}
-          {activeTab === 'governance' && (
-            <div className="animate-fadeIn">
-              <h2 className="text-4xl font-bold text-gold text-center mb-8">Protocol Governance</h2>
-              <GovernancePanel />
-            </div>
-          )}
+            {/* Governance Tab */}
+            {activeTab === 'governance' && (
+              <motion.div
+                key="governance"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+                className="px-4 py-20 pt-32"
+              >
+                <div className="max-w-6xl mx-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-center mb-12"
+                  >
+                    <h2 className="text-5xl font-bold text-cyan-300 mb-4">Protocol Governance</h2>
+                    <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                      Shape the future of SUPLOCK through decentralized governance
+                    </p>
+                  </motion.div>
+                  <GovernancePanel />
+                </div>
+              </motion.div>
+            )}
 
-          {/* Vaults Tab */}
-          {activeTab === 'vaults' && (
-            <div className="animate-fadeIn">
-              <h2 className="text-4xl font-bold text-gold text-center mb-8">Yield & Restaking</h2>
-              <VaultPanel />
-            </div>
-          )}
+            {/* Vaults Tab */}
+            {activeTab === 'vaults' && (
+              <motion.div
+                key="vaults"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+                className="px-4 py-20 pt-32"
+              >
+                <div className="max-w-7xl mx-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-center mb-12"
+                  >
+                    <h2 className="text-5xl font-bold text-cyan-300 mb-4">Yield & Restaking</h2>
+                    <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                      Maximize yields through auto-compounding vaults and dual restaking
+                    </p>
+                  </motion.div>
+                  <VaultPanel />
+                </div>
+              </motion.div>
+            )}
 
-          {/* Dividends Tab */}
-          {activeTab === 'dividends' && (
-            <div className="animate-fadeIn">
-              <h2 className="text-4xl font-bold text-gold text-center mb-8">Claim Dividends</h2>
-              <div className="max-w-2xl mx-auto">
-                <DividendPanel />
-              </div>
-            </div>
-          )}
+            {/* Dividends Tab */}
+            {activeTab === 'dividends' && (
+              <motion.div
+                key="dividends"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+                className="px-4 py-20 pt-32"
+              >
+                <div className="max-w-4xl mx-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-center mb-12"
+                  >
+                    <h2 className="text-5xl font-bold text-cyan-300 mb-4">Claim Dividends</h2>
+                    <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                      Receive USDC dividends from protocol fees automatically distributed
+                    </p>
+                  </motion.div>
+                  <DividendPanel />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </main>
 
-        {/* Footer */}
-        <footer className="border-t border-gold/30 mt-20 py-8">
-          <div className="container mx-auto px-4 text-center text-gray-400">
-            <p>SUPLOCK Protocol v0.1.0 • Built for Supra L1</p>
-            <p className="mt-2 text-sm">
-              <a href="https://gamma.app/docs/Sustainable-DeFi-7jabltpt95th05k" target="_blank" rel="noopener noreferrer" className="text-gold hover:text-darkGold">
-                Whitepaper
-              </a>
-              {' '} • {' '}
-              <a href="#" className="text-gold hover:text-darkGold">GitHub</a>
-              {' '} • {' '}
-              <a href="#" className="text-gold hover:text-darkGold">Docs</a>
-            </p>
-          </div>
-        </footer>
+        {/* Enhanced Footer */}
+        <EnhancedFooter />
       </div>
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: '#0B0E17',
+            color: '#00E5FF',
+            border: '1px solid #00E5FF',
+            borderRadius: '8px',
+          },
+        }}
+      />
     </WalletProvider>
   );
 };

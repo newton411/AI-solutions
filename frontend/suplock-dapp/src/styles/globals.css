@@ -2,6 +2,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Import refined font families for premium feel */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -10,43 +13,112 @@
 
 html {
   scroll-behavior: smooth;
+  /* Improve font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: linear-gradient(to bottom, #000000, #111111, #000000);
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background: linear-gradient(135deg, #0B0E17 0%, #000000 50%, #0B0E17 100%);
+  color: #E2E8F0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  
+  /* Performance: Use GPU acceleration */
+  will-change: auto;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875em;
+  padding: 0.125em 0.25em;
+  background: rgba(0, 229, 255, 0.05);
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  border-radius: 0.25em;
+  color: #00E5FF;
 }
 
-/* Scrollbar styling */
+/* ===========================
+   Typography & Heading Styles
+   =========================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  @media (max-width: 768px) {
+    font-size: 2.25rem;
+  }
+}
+
+h2 {
+  font-size: 2.5rem;
+  letter-spacing: -0.01em;
+  @media (max-width: 768px) {
+    font-size: 1.875rem;
+  }
+}
+
+h3 {
+  font-size: 1.75rem;
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+p {
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+}
+
+/* ===========================
+   Scrollbar Styling (Enhanced)
+   =========================== */
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111111;
+  background: rgba(11, 14, 23, 0.5);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FFD700;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #00E5FF 0%, #00BFFF 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(11, 14, 23, 0.8);
+  transition: all 250ms ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #DAA520;
+  background: linear-gradient(180deg, #00BFFF 0%, #00E5FF 100%);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
 }
 
-/* Gold gradient text */
+/* Firefox scrollbar */
+* {
+  scrollbar-color: rgba(0, 229, 255, 0.6) rgba(11, 14, 23, 0.5);
+  scrollbar-width: thin;
+}
+
+/* ===========================
+   Gradient Utilities
+   =========================== */
+
+/* Gold gradient text (legacy) */
 .text-gradient {
   background: linear-gradient(135deg, #FFD700, #FFA500);
   -webkit-background-clip: text;
@@ -54,14 +126,44 @@ code {
   background-clip: text;
 }
 
-/* Glass morphism effect */
+/* Cyan gradient text */
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #00E5FF, #00BFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===========================
+   Glass Morphism Effects
+   =========================== */
+
 .glass {
   background: rgba(17, 17, 17, 0.8);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
-/* Animation */
+/* Enhanced glass with cyan accent */
+.glass-cyan {
+  background: rgba(11, 14, 23, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 250ms ease;
+}
+
+.glass-cyan:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  background: rgba(11, 14, 23, 0.75);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ===========================
+   Animations & Transitions
+   =========================== */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -73,6 +175,137 @@ code {
   }
 }
 
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 229, 255, 0.5);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
 .animate-fadeIn {
   animation: fadeIn 1s ease-in-out;
+}
+
+.animate-slideInLeft {
+  animation: slideInFromLeft 0.5s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInFromRight 0.5s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ===========================
+   Focus States (Accessibility)
+   =========================== */
+
+/* Modern focus ring */
+:focus-visible {
+  outline: 2px solid #00E5FF;
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #00E5FF;
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* ===========================
+   Utility Classes
+   =========================== */
+
+/* High contrast text for accessibility */
+.text-contrast-high {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.text-contrast-medium {
+  color: #E2E8F0;
+  font-weight: 500;
+}
+
+.text-contrast-low {
+  color: #94A3B8;
+}
+
+/* Button base styles */
+.btn-base {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 250ms ease;
+  cursor: pointer;
+  user-select: none;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* ===========================
+   Responsive Utilities
+   =========================== */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
