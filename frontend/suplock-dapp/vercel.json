@@ -1,7 +1,12 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": ".next",
   "env": {
-    "NEXT_PUBLIC_API_URL": "@next_public_api_url"
+    "NEXT_PUBLIC_RPC_URL":           "https://rpc-testnet.supra.com",
+    "NEXT_PUBLIC_CHAIN_ID":          "6",
+    "NEXT_PUBLIC_EXPLORER_URL":      "https://testnet.suprascan.io",
+    "NEXT_PUBLIC_CONTRACT_ADDRESS":  "0xdce3ff2e6370630f906774423d2504d2f278908a5addebd691a7c2d892e1594a",
+    "NEXT_PUBLIC_API_URL":           "@next_public_api_url"
   }
 }
